@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C74C23D5-B1D2-4D6A-BDA4-365A59060E67}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Nesforia.Core</RootNamespace>
+    <AssemblyName>Nesforia.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile36</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="Nesforia.Core.licenseheader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Apu\IApu.cs" />
+    <Compile Include="Cpu\AddressingMode.cs" />
+    <Compile Include="Cpu\ICpu.cs" />
+    <Compile Include="Cpu\OpcodeParametersAttribute.cs" />
+    <Compile Include="Cpu\Opcode.cs" />
+    <Compile Include="Cpu\OpcodesHelper.cs" />
+    <Compile Include="Cpu\Registers.cs" />
+    <Compile Include="Exceptions\BadOpcodeException.cs" />
+    <Compile Include="Exceptions\CannotOpenRomException.cs" />
+    <Compile Include="IO\IAudioDevice.cs" />
+    <Compile Include="IO\IGraphicsDevice.cs" />
+    <Compile Include="IO\IInputDevice.cs" />
+    <Compile Include="Loaders\IRomLoader.cs" />
+    <Compile Include="Loaders\NesFormatLoader.cs" />
+    <Compile Include="Loaders\RomData.cs" />
+    <Compile Include="Loaders\UnifFormatLoader.cs" />
+    <Compile Include="Memory\ICartridge.cs" />
+    <Compile Include="Memory\IMapper.cs" />
+    <Compile Include="Memory\IMemory.cs" />
+    <Compile Include="Memory\Mirroring.cs" />
+    <Compile Include="Nes.cs" />
+    <Compile Include="Ppu\IPpu.cs" />
+    <Compile Include="Ppu\TvSystem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

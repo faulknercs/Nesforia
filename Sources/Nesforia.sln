@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesforia.Core", "Nesforia.Core\Nesforia.Core.csproj", "{C74C23D5-B1D2-4D6A-BDA4-365A59060E67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesforia.Interpreter", "Nesforia.Interpreter\Nesforia.Interpreter.csproj", "{375AC093-F6E1-421F-A346-0697764418C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesforia.Gui", "Nesforia.Gui\Nesforia.Gui.csproj", "{E3023890-9AE1-43FE-8546-25BE6F148493}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{38440EDB-84A9-4F6B-ACCC-B4216F73F672}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nesforia.Gui.Windows", "Nesforia.Gui.Windows\Nesforia.Gui.Windows.csproj", "{FE3381E4-52AA-40CA-8EAA-C0F689F37234}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C74C23D5-B1D2-4D6A-BDA4-365A59060E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C74C23D5-B1D2-4D6A-BDA4-365A59060E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C74C23D5-B1D2-4D6A-BDA4-365A59060E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C74C23D5-B1D2-4D6A-BDA4-365A59060E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{375AC093-F6E1-421F-A346-0697764418C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{375AC093-F6E1-421F-A346-0697764418C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{375AC093-F6E1-421F-A346-0697764418C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{375AC093-F6E1-421F-A346-0697764418C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3023890-9AE1-43FE-8546-25BE6F148493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3023890-9AE1-43FE-8546-25BE6F148493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3023890-9AE1-43FE-8546-25BE6F148493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3023890-9AE1-43FE-8546-25BE6F148493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE3381E4-52AA-40CA-8EAA-C0F689F37234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE3381E4-52AA-40CA-8EAA-C0F689F37234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE3381E4-52AA-40CA-8EAA-C0F689F37234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE3381E4-52AA-40CA-8EAA-C0F689F37234}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
