@@ -41,7 +41,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Ora19] =
             _handlers[Opcode.Ora1D] = () =>
                 {
-                    _registers.A |= _currentMemoryValue;
+                    _registers.A |= _mValue;
                     _registers.Z = _registers.A == 0;
                     _registers.N = (_registers.A & 0x80) != 0;
                 };
@@ -57,12 +57,12 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Adc79] =
             _handlers[Opcode.Adc7D] = () =>
                 {
-                    int temp = _registers.A + _currentMemoryValue + (_registers.C ? 1 : 0);
+                    int temp = _registers.A + _mValue + (_registers.C ? 1 : 0);
 
                     _registers.Z = (temp & 0xFF) == 0;
                     _registers.N = (temp & 0x80) != 0;
                     _registers.C = (temp >> 8) != 0;
-                    _registers.V = (((temp ^ _registers.A) & (temp ^ _currentMemoryValue)) & 0x80) != 0;
+                    _registers.V = (((temp ^ _registers.A) & (temp ^ _mValue)) & 0x80) != 0;
 
                     _registers.A = (byte)temp;
                 };
@@ -76,7 +76,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.And39] =
             _handlers[Opcode.And3D] = () =>
                 {
-                    _registers.A &= _currentMemoryValue;
+                    _registers.A &= _mValue;
                     _registers.Z = _registers.A == 0;
                     _registers.N = (_registers.A & 0x80) != 0;
                 };
@@ -98,7 +98,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.LdaB9] =
             _handlers[Opcode.LdaBd] = () =>
                 {
-                    _registers.A = _currentMemoryValue;
+                    _registers.A = _mValue;
                     _registers.Z = _registers.A == 0;
                     _registers.N = (_registers.A & 0x80) != 0;
                 };

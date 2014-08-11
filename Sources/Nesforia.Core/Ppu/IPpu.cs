@@ -27,6 +27,9 @@ namespace Nesforia.Core.Ppu
     /// <summary>
     /// Interface of NES Picture Processing Unit
     /// </summary>
+    /// <remarks>
+    /// Detailed description: http://wiki.nesdev.com/w/index.php/PPU
+    /// </remarks>
     public interface IPpu
     {
         /// <summary>
