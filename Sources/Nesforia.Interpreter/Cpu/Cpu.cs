@@ -40,6 +40,8 @@ namespace Nesforia.Interpreter.Cpu
         // used for temporary saving value from memory
         private byte _mValue;
 
+        private int _effectiveAddress;
+
         public Cpu(IMemory ram)
         {
             _ram = ram;
@@ -61,7 +63,7 @@ namespace Nesforia.Interpreter.Cpu
         {
             var opcode = (Opcode) _ram.Read(_registers.PC);
 
-            _mValue = GetMValueFor(opcode.AddressingMode());
+            EvaluateAdderessAndMValue(opcode.AddressingMode());
 
             Action handler = _handlers[opcode];
 
@@ -76,57 +78,72 @@ namespace Nesforia.Interpreter.Cpu
         }
 
         /// <summary>
-        /// Gets M value for opcode according to addressing mode
+        /// Evaluates M value and Effective Address for opcode according to addressing mode
         /// </summary>
         /// <param name="mode">Addressing mode of executing opcode</param>
-        /// <returns>M Value for opcode</returns>
-        private byte GetMValueFor(AddressingMode mode)
+        private void EvaluateAdderessAndMValue(AddressingMode mode)
         {
             var arg = _ram.Read(_registers.PC + 1);
 
             switch (mode)
             {
                 case AddressingMode.Implicit:
-                    return 0;
+                    return;
 
                 case AddressingMode.Accumulator:
-                    return _registers.A;
+                    _mValue = _registers.A;
+                    return;
 
                 case AddressingMode.Immediate:
                 case AddressingMode.Relative:
-                case AddressingMode.Indirect: // for indirect jmp returns low byte of address
-                    return arg;
+                    _effectiveAddress = _registers.PC + 1;
+                    _mValue = arg;
+                    return;
 
                 case AddressingMode.ZeroPage:
-                    return _ram.Read(arg);
+                    _effectiveAddress = arg;
+                    break;
 
                 case AddressingMode.ZeroPageX:
-                    return _ram.Read(0xFF & arg + _registers.X);
-                
+                    _effectiveAddress = 0xFF & arg + _registers.X;
+                    break;
+
                 case AddressingMode.ZeroPageY:
-                    return _ram.Read(0xFF & arg + _registers.Y);
+                    _effectiveAddress = 0xFF & arg + _registers.Y;
+                    break;
 
                 case AddressingMode.Absolute:
-                    return _ram.Read(MakeFullAddress(arg, _ram.Read(_registers.PC + 2)));
+                    _effectiveAddress = MakeFullAddress(arg, _ram.Read(_registers.PC + 2));
+                    break;
 
                 case AddressingMode.AbsoluteX:
-                    return _ram.Read(MakeFullAddress(arg, _ram.Read(_registers.PC + 2)) + _registers.X);
+                    _effectiveAddress = MakeFullAddress(arg, _ram.Read(_registers.PC + 2)) + _registers.X;
+                    break;
 
                 case AddressingMode.AbsoluteY:
-                    return _ram.Read(MakeFullAddress(arg, _ram.Read(_registers.PC + 2)) + _registers.Y);
+                    _effectiveAddress = MakeFullAddress(arg, _ram.Read(_registers.PC + 2)) + _registers.Y;
+                    break;
 
                 case AddressingMode.IndirectX:
                 {
                     var temp = (arg + _registers.X) & 0xff;
-                    return _ram.Read(MakeFullAddress(_ram.Read(temp), _ram.Read(++temp)));
+                    _effectiveAddress = MakeFullAddress(_ram.Read(temp), _ram.Read(++temp));
+                    break;
                 }
 
                 case AddressingMode.IndirectY:
-                    return _ram.Read(MakeFullAddress(_ram.Read(arg), _ram.Read(arg + 1)) + _registers.Y & 0xFFFF);
+                    _effectiveAddress = MakeFullAddress(_ram.Read(arg), _ram.Read(arg + 1)) + _registers.Y & 0xFFFF;
+                    break;
+
+                case AddressingMode.Indirect:
+                    _effectiveAddress = MakeFullAddress(arg, _ram.Read(_registers.PC + 2));
+                    return;
 
                 default:
                     throw new ArgumentOutOfRangeException("mode", "Unknown addressing mode!");
             }
+
+            _mValue = _ram.Read(_effectiveAddress);
         }
 
         /// <summary>
@@ -137,7 +154,7 @@ namespace Nesforia.Interpreter.Cpu
         /// <returns>16 bit address</returns>
         private static int MakeFullAddress(byte low, byte high)
         {
-            return (high << 8) | low;
+            return high << 8 | low;
         }
     }
 }
