@@ -47,7 +47,7 @@ namespace Nesforia.Core.Cpu
         /// <summary>
         /// Stack Pointer
         /// </summary>
-        public byte SP;
+        public byte S;
 
         /// <summary>
         /// Program Counter

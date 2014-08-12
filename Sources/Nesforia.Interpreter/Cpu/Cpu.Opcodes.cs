@@ -30,7 +30,35 @@ namespace Nesforia.Interpreter.Cpu
     {
         private void InitializeOpcodesHandlers()
         {
-            _handlers[Opcode.Brk] = () => { };
+            _handlers[Opcode.Brk] = () =>
+                {
+                    _registers.B = true;
+                    Push16(_registers.PC);
+                    Push(_registers.PS);
+
+                    _registers.PC = MakeFullAddress(_ram.Read(0xFFFE), _ram.Read(0xFFFF));
+                };
+
+            _handlers[Opcode.Rti] = () =>
+                {
+                    _registers.PS = Pull();
+                    _registers.PC = Pull16();
+
+                };
+
+            _handlers[Opcode.Rts] = () =>
+                {
+                    _registers.PC = Pull16();
+                    _registers.PC++;
+                };
+
+            _handlers[Opcode.Pha] = () => Push(_registers.A);
+
+            _handlers[Opcode.Php] = () => Push(_registers.PS);
+
+            _handlers[Opcode.Pla] = () => _registers.A = Pull();
+
+            _handlers[Opcode.Plp] = () => _registers.PS = Pull();
 
             _handlers[Opcode.Ora01] =
             _handlers[Opcode.Ora05] =
@@ -108,6 +136,47 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Sed] = () => _registers.D = true;
 
             _handlers[Opcode.Sei] = () => _registers.I = true;
+
+
+        }
+
+        /// <summary>
+        /// Pushes byte to stack, decrements S register
+        /// </summary>
+        /// <param name="value">Byte to store</param>
+        private void Push(byte value)
+        {
+            _ram.Write(_registers.S + 0x100, value);
+            _registers.S--;
+        }
+
+        /// <summary>
+        /// Pushes 16 bit value to stack, decrements S register twice
+        /// </summary>
+        /// <param name="value">Value to store</param>
+        private void Push16(int value)
+        {
+            Push((byte)((value & 0xFF00) >> 8));
+            Push((byte)(value & 0x00FF));
+        }
+
+        /// <summary>
+        /// Pulls value from stack, increments S register
+        /// </summary>
+        /// <returns>Value from stack</returns>
+        private byte Pull()
+        {
+            _registers.S++;
+            return _ram.Read(_registers.S + 0x100);
+        }
+
+        /// <summary>
+        /// Pulls 16 bit value from stack, increments S register twice
+        /// </summary>
+        /// <returns>16 bit value from stack</returns>
+        private int Pull16()
+        {
+            return Pull() | Pull() << 8;
         }
     }
 }
