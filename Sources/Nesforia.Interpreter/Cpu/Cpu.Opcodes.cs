@@ -256,10 +256,19 @@ namespace Nesforia.Interpreter.Cpu
                 _registers.N = (_registers.Y & 0x80) != 0;
             };
 
+            _handlers[Opcode.Jmp4C] = () => _registers.PC = _effectiveAddress;
+
+            _handlers[Opcode.Jmp6C] = () =>
+            {
+                // emulate buggy behavior of indirect jmp, when vector falls on a page boundary 
+                _registers.PC = MakeFullAddress(_ram.Read(_effectiveAddress), 
+                    (_effectiveAddress & 0xFF) == 0xFF ? _ram.Read(_effectiveAddress & 0xFF00) : _ram.Read(_effectiveAddress + 1));
+            };
+
             _handlers[Opcode.Jsr] = () =>
             {
                 Push16(_registers.PC + 2);
-                _registers.PC = MakeFullAddress(_mValue, _ram.Read(_registers.PC + 2));
+                _registers.PC = _effectiveAddress;
             };
 
             _handlers[Opcode.LdaA1] =
@@ -275,6 +284,30 @@ namespace Nesforia.Interpreter.Cpu
                 _registers.Z = _registers.A == 0;
                 _registers.N = (_registers.A & 0x80) != 0;
             };
+
+            _handlers[Opcode.LdxA2] =
+            _handlers[Opcode.LdxA6] =
+            _handlers[Opcode.LdxAe] =
+            _handlers[Opcode.LdxB6] =
+            _handlers[Opcode.LdxBe] = () =>
+            {
+                _registers.X = _mValue;
+                _registers.Z = _registers.X == 0;
+                _registers.N = (_registers.X & 0x80) != 0;
+            };
+
+            _handlers[Opcode.LdyA0] =
+            _handlers[Opcode.LdyA4] =
+            _handlers[Opcode.LdyAc] =
+            _handlers[Opcode.LdyB4] =
+            _handlers[Opcode.LdyBc] = () =>
+            {
+                _registers.Y = _mValue;
+                _registers.Z = _registers.Y == 0;
+                _registers.N = (_registers.Y & 0x80) != 0;   
+            };
+
+            _handlers[Opcode.Nop] = () => { };
 
             _handlers[Opcode.Ora01] =
             _handlers[Opcode.Ora05] =
@@ -310,8 +343,6 @@ namespace Nesforia.Interpreter.Cpu
                 _registers.PC = Pull16();
                 _registers.PC++;
             };
-
-            _handlers[Opcode.Nop] = () => { };
 
             _handlers[Opcode.Sec] = () => _registers.C = true;
 
