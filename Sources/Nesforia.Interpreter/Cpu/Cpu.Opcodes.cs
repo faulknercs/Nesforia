@@ -44,8 +44,8 @@ namespace Nesforia.Interpreter.Cpu
             {
                 int temp = _registers.A + _mValue + (_registers.C ? 1 : 0);
 
-                _registers.Z = (temp & 0xFF) == 0;
-                _registers.N = (temp & 0x80) != 0;
+                SetZeroAndNegative((byte)temp);
+
                 _registers.C = (temp >> 8) != 0;
                 _registers.V = (((temp ^ _registers.A) & (temp ^ _mValue)) & 0x80) != 0;
 
@@ -62,12 +62,17 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.And3D] = () =>
             {
                 _registers.A &= _mValue;
-                _registers.Z = _registers.A == 0;
-                _registers.N = (_registers.A & 0x80) != 0;
+                SetZeroAndNegative(_registers.A);
+            };
+
+            _handlers[Opcode.Asl0A] = () =>
+            {
+                _registers.C = (_registers.A & 0x80) != 0;
+                _registers.A <<= 1;
+                SetZeroAndNegative(_registers.A);
             };
 
             _handlers[Opcode.Asl06] =
-            _handlers[Opcode.Asl0A] =
             _handlers[Opcode.Asl0E] =
             _handlers[Opcode.Asl16] =
             _handlers[Opcode.Asl1E] = () =>
@@ -76,8 +81,7 @@ namespace Nesforia.Interpreter.Cpu
 
                 _mValue <<= 1;
 
-                _registers.Z = _mValue == 0;
-                _registers.N = (_mValue & 0x80) != 0;
+                SetZeroAndNegative(_mValue);
 
                 _ram.Write(_effectiveAddress, _mValue);
             };
@@ -165,9 +169,8 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.CmpDd] = () =>
             {
                 int temp = _registers.A - _mValue;
-                _registers.N = (temp & 0x80) != 0;
+                SetZeroAndNegative((byte)temp);
                 _registers.C = (_registers.A >= _mValue);
-                _registers.Z = (temp == 0);
             };
 
             _handlers[Opcode.CpxE0] =
@@ -175,9 +178,8 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.CpxEc] = () =>
             {
                 int temp = _registers.X - _mValue;
-                _registers.N = (temp & 0x80) != 0;
+                SetZeroAndNegative((byte)temp);
                 _registers.C = (_registers.X >= _mValue);
-                _registers.Z = (temp == 0);
             };
 
             _handlers[Opcode.CpyC0] =
@@ -185,9 +187,8 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.CpyCc] = () =>
             {
                 int temp = _registers.Y - _mValue;
-                _registers.N = (temp & 0x80) != 0;
+                SetZeroAndNegative((byte)temp);
                 _registers.C = (_registers.Y >= _mValue);
-                _registers.Z = (temp == 0);
             };
 
             _handlers[Opcode.DecC6] =
@@ -196,8 +197,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.DecDe] = () =>
             {
                 _mValue--;
-                _registers.Z = _mValue == 0;
-                _registers.N = (_mValue & 0x80) != 0;
+                SetZeroAndNegative(_mValue);
 
                 _ram.Write(_effectiveAddress, _mValue);
             };
@@ -205,15 +205,13 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Dex] = () =>
             {
                 _registers.X--;
-                _registers.Z = _registers.X == 0;
-                _registers.N = (_registers.X & 0x80) != 0;
+                SetZeroAndNegative(_registers.X);
             };
 
             _handlers[Opcode.Dey] = () =>
             {
                 _registers.Y--;
-                _registers.Z = _registers.Y == 0;
-                _registers.N = (_registers.Y & 0x80) != 0;
+                SetZeroAndNegative(_registers.Y);
             };
 
             _handlers[Opcode.Eor41] =
@@ -226,8 +224,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Eor5D] = () =>
             {
                 _registers.A ^= _mValue;
-                _registers.Z = _registers.A == 0;
-                _registers.N = (_registers.A & 0x80) != 0;
+                SetZeroAndNegative(_registers.A);
             };
 
             _handlers[Opcode.IncE6] =
@@ -236,8 +233,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.IncFe] = () =>
             {
                 _mValue++;
-                _registers.Z = _mValue == 0;
-                _registers.N = (_mValue & 0x80) != 0;
+                SetZeroAndNegative(_mValue);
 
                 _ram.Write(_effectiveAddress, _mValue);
             };
@@ -245,15 +241,13 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Inx] = () =>
             {
                 _registers.X++;
-                _registers.Z = _registers.X == 0;
-                _registers.N = (_registers.X & 0x80) != 0;
+                SetZeroAndNegative(_registers.X);
             };
 
             _handlers[Opcode.Iny] = () =>
             {
                 _registers.Y++;
-                _registers.Z = _registers.Y == 0;
-                _registers.N = (_registers.Y & 0x80) != 0;
+                SetZeroAndNegative(_registers.Y);
             };
 
             _handlers[Opcode.Jmp4C] = () => _registers.PC = _effectiveAddress;
@@ -281,8 +275,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.LdaBd] = () =>
             {
                 _registers.A = _mValue;
-                _registers.Z = _registers.A == 0;
-                _registers.N = (_registers.A & 0x80) != 0;
+                SetZeroAndNegative(_registers.A);
             };
 
             _handlers[Opcode.LdxA2] =
@@ -292,8 +285,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.LdxBe] = () =>
             {
                 _registers.X = _mValue;
-                _registers.Z = _registers.X == 0;
-                _registers.N = (_registers.X & 0x80) != 0;
+                SetZeroAndNegative(_registers.X);
             };
 
             _handlers[Opcode.LdyA0] =
@@ -303,11 +295,31 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.LdyBc] = () =>
             {
                 _registers.Y = _mValue;
-                _registers.Z = _registers.Y == 0;
-                _registers.N = (_registers.Y & 0x80) != 0;   
+                SetZeroAndNegative(_registers.Y);
             };
 
             _handlers[Opcode.Nop] = () => { };
+
+            _handlers[Opcode.Lsr4A] = () =>
+            {
+                _registers.C = (_registers.A & 0x01) != 0;
+                _registers.A >>= 1;
+                SetZeroAndNegative(_registers.A);
+            };
+
+            _handlers[Opcode.Lsr46] =
+            _handlers[Opcode.Lsr4E] =
+            _handlers[Opcode.Lsr56] =
+            _handlers[Opcode.Lsr5E] = () =>
+            {
+                _registers.C = (_mValue & 0x01) != 0;
+
+                _mValue >>= 1;
+
+                SetZeroAndNegative(_mValue);
+
+                _ram.Write(_effectiveAddress, _mValue);
+            };
 
             _handlers[Opcode.Ora01] =
             _handlers[Opcode.Ora05] =
@@ -319,8 +331,7 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Ora1D] = () =>
             {
                 _registers.A |= _mValue;
-                _registers.Z = _registers.A == 0;
-                _registers.N = (_registers.A & 0x80) != 0;
+                SetZeroAndNegative(_registers.A);
             };
 
             _handlers[Opcode.Pha] = () => Push(_registers.A);
@@ -330,6 +341,52 @@ namespace Nesforia.Interpreter.Cpu
             _handlers[Opcode.Pla] = () => _registers.A = Pull();
 
             _handlers[Opcode.Plp] = () => _registers.PS = Pull();
+
+            _handlers[Opcode.Rol2A] = () =>
+            {
+                var temp = (byte)(_registers.A << 1 | (_registers.C ? 1 : 0));
+
+                _registers.C = (_registers.A & 0x80) != 0;
+                SetZeroAndNegative(temp);
+
+                _registers.A = temp;
+            };
+
+            _handlers[Opcode.Rol26] =
+            _handlers[Opcode.Rol2E] =
+            _handlers[Opcode.Rol36] =
+            _handlers[Opcode.Rol3E] = () =>
+            {
+                var temp = (byte)(_mValue << 1 | (_registers.C ? 1 : 0));
+                
+                _registers.C = (_mValue & 0x80) != 0;
+                SetZeroAndNegative(temp);
+
+                _ram.Write(_effectiveAddress, temp);
+            };
+
+            _handlers[Opcode.Ror6A] = () =>
+            {
+                var temp = (byte)(_registers.A >> 1 | (_registers.C ? 0x80 : 0));
+
+                _registers.C = (_registers.A & 0x01) != 0;
+                SetZeroAndNegative(temp);
+
+                _ram.Write(_effectiveAddress, temp);
+            };
+
+            _handlers[Opcode.Ror66] =
+            _handlers[Opcode.Ror6E] =
+            _handlers[Opcode.Ror76] =
+            _handlers[Opcode.Ror7E] = () =>
+            {
+                var temp = (byte)(_mValue >> 1 | (_registers.C ? 0x80 : 0));
+
+                _registers.C = (_mValue & 0x01) != 0;
+                SetZeroAndNegative(temp);
+
+                _registers.A = temp;
+            };
 
             _handlers[Opcode.Rti] = () =>
             {
@@ -344,13 +401,81 @@ namespace Nesforia.Interpreter.Cpu
                 _registers.PC++;
             };
 
+            _handlers[Opcode.SbcE1] =
+            _handlers[Opcode.SbcE5] =
+            _handlers[Opcode.SbcE9] =
+            _handlers[Opcode.SbcEd] =
+            _handlers[Opcode.SbcF1] =
+            _handlers[Opcode.SbcF5] =
+            _handlers[Opcode.SbcF9] =
+            _handlers[Opcode.SbcFd] = () =>
+            {
+                int temp = _registers.A - _mValue - (_registers.C ? 0 : 1);
+
+                SetZeroAndNegative((byte)temp);
+                _registers.C = (temp >> 8) != 0;
+                _registers.V = ((temp ^ _registers.A) & (temp ^ _mValue) & 0x80) != 0;
+
+                _registers.A = (byte) (temp & 0xFF);
+            };
+
             _handlers[Opcode.Sec] = () => _registers.C = true;
 
             _handlers[Opcode.Sed] = () => _registers.D = true;
 
             _handlers[Opcode.Sei] = () => _registers.I = true;
 
+            _handlers[Opcode.Sta81] = 
+            _handlers[Opcode.Sta85] = 
+            _handlers[Opcode.Sta8D] = 
+            _handlers[Opcode.Sta91] = 
+            _handlers[Opcode.Sta95] = 
+            _handlers[Opcode.Sta99] = 
+            _handlers[Opcode.Sta9D] = () => _ram.Write(_effectiveAddress, _registers.A);
 
+            _handlers[Opcode.Stx86] = 
+            _handlers[Opcode.Stx8E] = 
+            _handlers[Opcode.Stx96] = () => _ram.Write(_effectiveAddress, _registers.X);
+
+            _handlers[Opcode.Sty84] = 
+            _handlers[Opcode.Sty8C] = 
+            _handlers[Opcode.Sty94] = () => _ram.Write(_effectiveAddress, _registers.Y);
+
+            _handlers[Opcode.Tax] = () =>
+            {
+                _registers.X = _registers.A;
+                SetZeroAndNegative(_registers.X);
+            };
+
+            _handlers[Opcode.Tay] = () =>
+            {
+                _registers.Y = _registers.A;
+                SetZeroAndNegative(_registers.Y);
+            };
+
+            _handlers[Opcode.Tsx] = () =>
+            {
+                _registers.X = _registers.S;
+                SetZeroAndNegative(_registers.X);
+            };
+
+            _handlers[Opcode.Txa] = () =>
+            {
+                _registers.A = _registers.X;
+                SetZeroAndNegative(_registers.A);
+            };
+
+            _handlers[Opcode.Txs] = () =>
+            {
+                _registers.S = _registers.X;
+                SetZeroAndNegative(_registers.S);
+            };
+
+            _handlers[Opcode.Tya] = () =>
+            {
+                _registers.A = _registers.Y;
+                SetZeroAndNegative(_registers.A);
+            };
         }
 
         /// <summary>
@@ -392,9 +517,22 @@ namespace Nesforia.Interpreter.Cpu
             return Pull() | Pull() << 8;
         }
 
+        /// <summary>
+        /// Provides branching to new location, changes PC register
+        /// </summary>
         private void Branch()
         {
             _registers.PC += (sbyte)_mValue;
+        }
+
+        /// <summary>
+        /// Sets Zero flag, if <paramref name="value"/> is zero and sets Negative flag, if highest bit of <paramref name="value"/> is set
+        /// </summary>
+        /// <param name="value">Value for checking</param>
+        private void SetZeroAndNegative(byte value)
+        {
+            _registers.Z = value == 0;
+            _registers.N = (value & 0x80) != 0;
         }
     }
 }
