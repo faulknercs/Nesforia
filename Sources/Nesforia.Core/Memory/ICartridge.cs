@@ -26,8 +26,6 @@ namespace Nesforia.Core.Memory
 {
     public interface ICartridge
     {
-        IMapper Mapper { get; }
-
         bool HasSaveRam { get; }
 
         bool HasTrainer { get; }

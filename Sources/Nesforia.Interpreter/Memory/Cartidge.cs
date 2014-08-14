@@ -34,7 +34,6 @@ namespace Nesforia.Interpreter.Memory
             
         }
         
-        public IMapper Mapper { get; private set; }
         public bool HasSaveRam { get; private set; }
         public bool HasTrainer { get; private set; }
         
