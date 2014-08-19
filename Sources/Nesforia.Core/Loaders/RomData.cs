@@ -22,6 +22,8 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
+
+using System;
 using Nesforia.Core.Memory;
 using Nesforia.Core.Ppu;
 
@@ -35,12 +37,16 @@ namespace Nesforia.Core.Loaders
 
         public bool IsCorrupted { get; set; }
 
-        public byte[] PrgRomBanks { get; set; }
+        public byte[] PrgRomDump { get; set; }
 
-        public byte[] ChrRomBanks { get; set; }
+        public byte[] ChrRomDump { get; set; }
+
+        public byte[] TrainerDump { get; set; }
 
         public bool IsPlaychoice { get; set; }
 
         public bool IsVsUnisystem { get; set; }
+
+        public String Name { get; set; }
     }
 }

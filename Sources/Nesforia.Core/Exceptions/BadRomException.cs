@@ -22,16 +22,32 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
+
 using System;
 
 namespace Nesforia.Core.Exceptions
 {
-    public class CannotOpenRomException : Exception 
+    /// <summary>
+    /// Throws, when emulator try to read corrupted or unsupported rom 
+    /// </summary>
+    public class BadRomException : Exception 
     {
-        public CannotOpenRomException() { }
+        /// <summary>
+        /// Initialize new instance of BadRomException
+        /// </summary>
+        public BadRomException() { }
 
-        public CannotOpenRomException(String message) : base(message) {}
+        /// <summary>
+        /// Initialize new instance of BadRomException with message
+        /// </summary>
+        /// <param name="message">Exception message</param>
+        public BadRomException(String message) : base(message) {}
 
-        public CannotOpenRomException(String message, Exception innerException) : base(message, innerException) {}
+        /// <summary>
+        /// Initialize new instance of BadRomException with message and inner exception
+        /// </summary>
+        /// <param name="message">Exception message</param>
+        /// <param name="innerException">The exception that is the cause of the current exception</param>
+        public BadRomException(String message, Exception innerException) : base(message, innerException) {}
     }
 }

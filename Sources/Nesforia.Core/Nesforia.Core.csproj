@@ -47,11 +47,13 @@
     <Compile Include="Cpu\OpcodesHelper.cs" />
     <Compile Include="Cpu\Registers.cs" />
     <Compile Include="Exceptions\BadOpcodeException.cs" />
-    <Compile Include="Exceptions\CannotOpenRomException.cs" />
+    <Compile Include="Exceptions\BadRomException.cs" />
     <Compile Include="IO\IAudioDevice.cs" />
     <Compile Include="IO\IGraphicsDevice.cs" />
     <Compile Include="IO\IInputDevice.cs" />
+    <Compile Include="Loaders\ILoaderProvider.cs" />
     <Compile Include="Loaders\IRomLoader.cs" />
+    <Compile Include="Loaders\LoaderProvider.cs" />
     <Compile Include="Loaders\NesFormatLoader.cs" />
     <Compile Include="Loaders\RomData.cs" />
     <Compile Include="Loaders\UnifFormatLoader.cs" />

@@ -23,48 +23,39 @@
 *****************************************************************************/
 #endregion
 
-using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Nesforia.Core.Loaders
 {
     /// <summary>
-    /// Loader for UNIF
+    /// Interface of rom loaders provider, helps to manage loaders.
     /// </summary>
-    public class UnifFormatLoader : IRomLoader
+    public interface ILoaderProvider
     {
         /// <summary>
-        /// Loads rom from UNIF file, wrapped into binary reader.
+        /// Gets avalaible loaders for current provider
         /// </summary>
-        /// <param name="reader">Binary reader, wrapped over data stream</param>
-        /// <returns>Content of NES rom in <see cref="RomData"/> structure</returns>
-        public RomData LoadRom(BinaryReader reader)
-        {
-            throw new System.NotImplementedException();
-        }
+        /// <returns>Available loaders</returns>
+        IEnumerable<IRomLoader> GetAvailableLoaders();
 
         /// <summary>
-        /// Name of supported format
+        /// Gets loader for file header. Should not change stream position.
         /// </summary>
-        public String FormatName
-        {
-            get { return "Universal NES Image Format"; }
-        }
+        /// <param name="reader">Wrapped into reader data stream</param>
+        /// <returns>Rom loader according to file header</returns>
+        IRomLoader GetLoaderByHeader(BinaryReader reader);
 
         /// <summary>
-        /// Array of supported file extensions of UNIF
+        /// Add available loader to provider
         /// </summary>
-        public String[] FileExtensions
-        {
-            get { return new[] { "unf", "unif" }; }
-        }
+        /// <param name="romLoader">NES rom loader</param>
+        void AddLoader(IRomLoader romLoader);
 
         /// <summary>
-        /// Header value, which marks supported format. For UNIF it is "UNIF", not null-terminated (0x55 0x4E 0x49 0x46)
+        /// Add available loaders to provider
         /// </summary>
-        public byte[] Header
-        {
-            get { return new byte[] { 0x55, 0x4E, 0x49, 0x46 }; }
-        }
+        /// <param name="romLoaders">NES rom loaders</param>
+        void AddLoaders(IEnumerable<IRomLoader> romLoaders);
     }
 }

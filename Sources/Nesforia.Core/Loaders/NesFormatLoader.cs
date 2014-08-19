@@ -22,6 +22,8 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
+
+using System;
 using System.IO;
 using Nesforia.Core.Exceptions;
 using Nesforia.Core.Memory;
@@ -29,27 +31,37 @@ using Nesforia.Core.Ppu;
 
 namespace Nesforia.Core.Loaders
 {
+    /// <summary>
+    /// Loader for iNES format. 
+    /// </summary>
     public class NesFormatLoader : IRomLoader
     {
-        public RomData LoadCartridge(BinaryReader reader)
+        /// <summary>
+        /// Loads rom from iNES file, wrapped into binary reader.
+        /// </summary>
+        /// <param name="reader">Binary reader, wrapped over data stream</param>
+        /// <returns>Content of NES rom in <see cref="RomData"/> structure</returns>
+        /// <exception cref="BadRomException">Throws, when iNES rom has corrupted header</exception>
+        public RomData LoadRom(BinaryReader reader)
         {
             var romData = new RomData();
 
             var header = reader.ReadBytes(16);
 
             // 0-3 bytes of iNES rom should be equal to "0x4e 0x45 0x53 0x1a" (or "NES^Z" in DOS encoding)
-            if (header[0] != 0x4e &&
+            if (header[0] != 0x4E &&
                 header[1] != 0x45 &&
                 header[2] != 0x53 &&
-                header[3] != 0x1a)
+                header[3] != 0x1A)
             {
-                throw new CannotOpenRomException("Not a NES Rom");
+                throw new BadRomException("Not a iNES Rom");
             }
 
             int prgRomSize = header[4];
             int chrRomSize = header[5];
 
             bool hasTrainer = (header[6] & 0x04) != 0;
+            //hasSram = (flags & 0x02) != 0;
             switch (header[6] & 0x09)
             {
                 case 0x00:
@@ -68,9 +80,9 @@ namespace Nesforia.Core.Loaders
             //Lower 4 bits of the mapper number
             int mapperNo = header[6] >> 4;
             //Upper 4 bits of the mapper number
-            mapperNo |= header[7] & 0xf0;
+            mapperNo |= header[7] & 0xF0;
 
-            bool isInes2 = (header[7] & 0xc) == 0x0c;
+            bool isInes2 = (header[7] & 0xC) == 0x0C;
             romData.IsPlaychoice = (header[7] & 0x02) != 0;
             romData.IsVsUnisystem = (header[7] & 0x01) != 0;
 
@@ -79,10 +91,10 @@ namespace Nesforia.Core.Loaders
             {
                 //_subMapper = header[8] >> 4;
                 // Bits 11-8 of mapper number.
-                mapperNo |= (header[8] & 0x0f) << 8;
+                mapperNo |= (header[8] & 0x0F) << 8;
 
-                chrRomSize |= (header[9] & 0xf0) << 4;
-                prgRomSize |= (header[9] & 0x0f) << 8;
+                chrRomSize |= (header[9] & 0xF0) << 4;
+                prgRomSize |= (header[9] & 0x0F) << 8;
 
                 romData.TvSystem = (header[12] & 0x01) != 0 ? TvSystem.Pal : TvSystem.Ntsc;
                 if ((header[12] & 0x02) != 0)
@@ -101,23 +113,39 @@ namespace Nesforia.Core.Loaders
                 romData.TvSystem = (header[9] & 1) == 1 ? TvSystem.Pal : TvSystem.Ntsc;
             }
 
-            for (int i = 0; i < prgRomSize; i++)
+            if (hasTrainer)
             {
-                
+                romData.TrainerDump = reader.ReadBytes(0x200);
             }
 
-            for (int i = 0; i < chrRomSize; i++)
-            {
-                
-            }
+            romData.PrgRomDump = reader.ReadBytes(prgRomSize * 0x4000);
+            romData.ChrRomDump = reader.ReadBytes(chrRomSize * 0x2000);
 
             return romData;
         }
 
-        private void ReadFlags6(byte flags)
+        /// <summary>
+        /// Name of supported format
+        /// </summary>
+        public String FormatName
         {
-        //    _hasSram = (flags & 0x02) != 0;
-        //    _fourScreenModeEnabled = (flags & 0x08) != 0;
+            get { return "iNES Format"; }
+        }
+
+        /// <summary>
+        /// Array of supported file extensions of iNES format
+        /// </summary>
+        public String[] FileExtensions
+        {
+            get { return new[] { "nes" }; }
+        }
+
+        /// <summary>
+        /// Header value, which marks supported format. For iNES it is "NES^Z" - null-terminated string (0x4E 0x45 0x53 0x15)
+        /// </summary>
+        public byte[] Header
+        {
+            get { return new byte[] { 0x4E, 0x45, 0x53, 0x15 }; }
         }
     }
 }

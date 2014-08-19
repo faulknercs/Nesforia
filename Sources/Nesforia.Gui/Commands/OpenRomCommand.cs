@@ -27,16 +27,19 @@ using System.Collections.Generic;
 using System.IO;
 using Eto.Forms;
 using Nesforia.Core;
+using Nesforia.Core.Loaders;
 
 namespace Nesforia.Gui.Commands
 {
     internal sealed class OpenRomCommand : Command
     {
         private readonly Nes _nesEmulator;
+        private readonly ILoaderProvider _loaderProvider;
 
-        public OpenRomCommand(Nes nesEmulator)
+        public OpenRomCommand(Nes nesEmulator, ILoaderProvider loaderProvider)
         {
             _nesEmulator = nesEmulator;
+            _loaderProvider = loaderProvider;
 
             MenuText = Resources.Text.FileOpen;
             Shortcut = Application.Instance.CommonModifier | Keys.O;
@@ -50,9 +53,9 @@ namespace Nesforia.Gui.Commands
 
             if (dlg.ShowDialog(Application.Instance.MainForm) == DialogResult.Ok)
             {
-                using (var stream = File.OpenRead(dlg.FileName))
+                using (var reader = new BinaryReader(File.OpenRead(dlg.FileName)))
                 {
-                    //_nesEmulator.LoadRom(stream);
+                    
                 }
             }
         }

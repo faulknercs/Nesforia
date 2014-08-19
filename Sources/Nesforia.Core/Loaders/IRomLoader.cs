@@ -22,13 +22,38 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
+
+using System;
 using System.IO;
-using Nesforia.Core.Memory;
 
 namespace Nesforia.Core.Loaders
 {
+    /// <summary>
+    /// Interface for rom loaders
+    /// </summary>
     public interface IRomLoader
     {
-        RomData LoadCartridge(BinaryReader reader);
+        /// <summary>
+        /// Loads rom from stream, wrapped into binary reader
+        /// </summary>
+        /// <param name="reader">Binary reader, wrapped over data stream</param>
+        /// <returns>Content of NES rom in <see cref="RomData"/> structure</returns>
+        /// <exception cref="Nesforia.Core.Exceptions.BadRomException">Throws, when loader cann't read rom data</exception>
+        RomData LoadRom(BinaryReader reader);
+
+        /// <summary>
+        /// Name of supported format
+        /// </summary>
+        String FormatName { get; }
+
+        /// <summary>
+        /// Array of supported file extensions of this format
+        /// </summary>
+        String[] FileExtensions { get; }
+
+        /// <summary>
+        /// Header value, which marks supported format
+        /// </summary>
+        byte[] Header { get; }
     }
 }
