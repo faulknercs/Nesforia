@@ -141,11 +141,11 @@ namespace Nesforia.Core.Loaders
         }
 
         /// <summary>
-        /// Header value, which marks supported format. For iNES it is "NES^Z" - null-terminated string (0x4E 0x45 0x53 0x15)
+        /// Header value, which marks supported format. For iNES it is "NES^Z" - null-terminated string (0x4E 0x45 0x53 0x1A)
         /// </summary>
         public byte[] Header
         {
-            get { return new byte[] { 0x4E, 0x45, 0x53, 0x15 }; }
+            get { return new byte[] { 0x4E, 0x45, 0x53, 0x1A }; }
         }
     }
 }

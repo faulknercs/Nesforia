@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Eto.Forms;
 using Nesforia.Core;
 using Nesforia.Core.Loaders;
@@ -55,15 +56,30 @@ namespace Nesforia.Gui.Commands
             {
                 using (var reader = new BinaryReader(File.OpenRead(dlg.FileName)))
                 {
-                    
+                    RomData rom = _loaderProvider.GetLoaderByHeader(reader).LoadRom(reader);
+
+                    if (String.IsNullOrEmpty(rom.Name))
+                    {
+                        rom.Name = Path.GetFileNameWithoutExtension(dlg.FileName);
+                    }
                 }
             }
         }
 
-        private static IEnumerable<IFileDialogFilter> CreateFilters()
+        private IEnumerable<IFileDialogFilter> CreateFilters()
         {
-            yield return new FileDialogFilter("iNES Format", "nes");
-            yield return new FileDialogFilter("UNIF Format", "unf", "unif");
+            var filters = new List<IFileDialogFilter>();
+            var allExtensions = new List<String>();
+
+            foreach (var loader in _loaderProvider.GetAvailableLoaders())
+            {
+                filters.Add(new FileDialogFilter(loader.FormatName, loader.FileExtensions));
+                allExtensions.AddRange(loader.FileExtensions);
+            }
+
+            filters.Insert(0, new FileDialogFilter("All supported", allExtensions.ToArray()));
+
+            return filters;
         }
     }
 }

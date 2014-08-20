@@ -26,6 +26,7 @@ using System;
 using Eto.Drawing;
 using Eto.Forms;
 using Nesforia.Core;
+using Nesforia.Core.Loaders;
 using Nesforia.Gui.Commands;
 
 namespace Nesforia.Gui.Forms
@@ -33,12 +34,18 @@ namespace Nesforia.Gui.Forms
     public sealed class MainForm : Form
     {
         private Nes _nesEmu;
+
+        private ILoaderProvider _loaderProvider;
         
         public MainForm()
         {
             Title = Resources.Text.Nesforia;
 
             ClientSize = new Size(320, 240);
+
+            // todo: di
+            _loaderProvider = new LoaderProvider();
+            _loaderProvider.AddLoader(new NesFormatLoader());
 
             CreateMenu();
         }
@@ -49,7 +56,7 @@ namespace Nesforia.Gui.Forms
             Application.Instance.CreateStandardMenu(menu.Items);
 
             var fileMenu = menu.Items.GetSubmenu(Resources.Text.FileMenu, 100);
-            fileMenu.Items.Add(new OpenRomCommand(_nesEmu));
+            fileMenu.Items.Add(new OpenRomCommand(_nesEmu, _loaderProvider));
 
             var nesMenu = menu.Items.GetSubmenu(Resources.Text.NesMenu, 200);
             
