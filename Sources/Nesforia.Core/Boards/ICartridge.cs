@@ -22,7 +22,8 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
-namespace Nesforia.Core.Memory
+
+namespace Nesforia.Core.Boards
 {
     public interface ICartridge
     {

@@ -24,6 +24,7 @@
 #endregion
 using System;
 using System.IO;
+using Nesforia.Core.Boards;
 using Nesforia.Core.Cpu;
 using Nesforia.Core.IO;
 using Nesforia.Core.Memory;
@@ -57,10 +58,18 @@ namespace Nesforia.Core
             Initialization();
         }
 
-
-        public void LoadRom(Stream stream)
+        /// <summary>
+        /// Load cartridge to emulator
+        /// </summary>
+        /// <param name="cartridge">NES cartridge</param>
+        public void InsertCartridge(ICartridge cartridge)
         {
-            
+            _cartridge = cartridge;
+
+            //_ram.Reset();
+            _ram.Map(0x4021, 0xFFFF, cartridge.ReadPrg, cartridge.WritePrg);
+
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -68,7 +77,7 @@ namespace Nesforia.Core
         /// </summary>
         public void Run()
         {
-            
+            throw new NotImplementedException();
         }
 
         /// <summary>

@@ -22,10 +22,11 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
-using Nesforia.Core.Loaders;
-using Nesforia.Core.Memory;
 
-namespace Nesforia.Interpreter.Memory
+using Nesforia.Core.Boards;
+using Nesforia.Core.Loaders;
+
+namespace Nesforia.Interpreter.Boards
 {
     public class Cartidge : ICartridge
     {

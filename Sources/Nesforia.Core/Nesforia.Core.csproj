@@ -57,7 +57,7 @@
     <Compile Include="Loaders\NesFormatLoader.cs" />
     <Compile Include="Loaders\RomData.cs" />
     <Compile Include="Loaders\UnifFormatLoader.cs" />
-    <Compile Include="Memory\ICartridge.cs" />
+    <Compile Include="Boards\ICartridge.cs" />
     <Compile Include="Memory\IMemory.cs" />
     <Compile Include="Memory\Mirroring.cs" />
     <Compile Include="Nes.cs" />
