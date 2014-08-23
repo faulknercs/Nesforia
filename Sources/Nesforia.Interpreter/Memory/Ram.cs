@@ -24,16 +24,25 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nesforia.Core.Memory;
 
 namespace Nesforia.Interpreter.Memory
 {
     public class Ram : IMemory
     {
-        private readonly byte[] _systemRam = new byte[0x2000];
+        private readonly byte[] _systemRam = new byte[0x800];
 
-        private readonly IDictionary<int, Func<byte>> _readMapping;
-        private readonly IDictionary<int, Action<byte>> _writeMapping;
+        private readonly IDictionary<int, Func<byte>> _readMapping = new Dictionary<int, Func<byte>>();
+        private readonly IDictionary<int, Action<byte>> _writeMapping = new Dictionary<int, Action<byte>>();
+
+        private readonly IDictionary<int, Func<int, byte>> _readRangeMapping = new Dictionary<int, Func<int, byte>>();
+        private readonly IDictionary<int, Action<int, byte>> _writeRangeMapping = new Dictionary<int, Action<int, byte>>();
+
+        public Ram()
+        {
+            Map(0x0000, 0x1FFF, ReadSystemRam, WriteSystemRam);
+        }
 
         public void Map(int address, Func<byte> readCallback, Action<byte> writeCallback)
         {
@@ -41,19 +50,87 @@ namespace Nesforia.Interpreter.Memory
             _writeMapping[address] = writeCallback;
         }
 
-        public void Map(int startAdress, int endAdress, Func<int, byte> readCallback, Action<int, byte> writeCallback)
+        public void Map(int startAddress, int endAddress, Func<int, byte> readCallback, Action<int, byte> writeCallback)
         {
-            throw new NotImplementedException();
+            _readRangeMapping[startAddress] = _readRangeMapping[endAddress] = readCallback;
+
+            _writeRangeMapping[startAddress] = _writeRangeMapping[endAddress] = writeCallback;
         }
 
         public byte Read(int address)
         {
-            return _readMapping[address]();
+            if (address < 0 || address > 0xFFFF)
+            {
+                throw new ArgumentOutOfRangeException("address", String.Format("Trying read from invalid address: {0:X}", address));
+            }
+
+            address = PrepareAddress(address);
+
+            if (_readMapping.ContainsKey(address))
+            {
+                return _readMapping[address]();
+            }
+
+            var addresses = _readRangeMapping.Keys.Where(x => x <= address).ToList();
+
+            if (!addresses.Any())
+            {
+                throw new ArgumentOutOfRangeException("address", String.Format("Handler for address {0:X} not found", address));
+            }
+
+            int key = addresses.Max();
+            return _readRangeMapping[key](address);
         }
 
         public void Write(int address, byte value)
         {
-            _writeMapping[address](value);
+            if (address < 0 || address > 0xFFFF)
+            {
+                throw new ArgumentOutOfRangeException("address", "Trying write to invalid address");
+            }
+
+            address = PrepareAddress(address);
+
+            if (_readMapping.ContainsKey(address))
+            {
+                _writeMapping[address](value);
+                return;
+            }
+
+            var addresses = _writeRangeMapping.Keys.Where(x => x <= address).ToList();
+
+            if (!addresses.Any())
+            {
+                throw new ArgumentOutOfRangeException("address", String.Format("Handler for address {0:X} not found", address));
+            }
+
+            int key = addresses.Max();
+            _writeMapping[key](value);
+        }
+
+        private int PrepareAddress(int address)
+        {
+            if (address < 0x2000)
+            {
+                return address & 0x07FF;
+            }
+
+            if(address < 0x4000)
+            {
+                return address & 0x2007;
+            }
+
+            return address;
+        }
+
+        private void WriteSystemRam(int address, byte value)
+        {
+            _systemRam[address] = value;
+        }
+
+        private byte ReadSystemRam(int address)
+        {
+            return _systemRam[address];
         }
     }
 }

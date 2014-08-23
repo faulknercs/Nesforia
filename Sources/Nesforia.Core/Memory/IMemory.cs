@@ -40,13 +40,13 @@ namespace Nesforia.Core.Memory
         void Map(int address, Func<byte> readCallback, Action<byte> writeCallback);
 
         /// <summary>
-        /// Maps address range from <paramref name="startAdress"/> to <paramref name="endAdress"/> to specific read and write functions
+        /// Maps address range from <paramref name="startAddress"/> to <paramref name="endAddress"/> to specific read and write functions
         /// </summary>
-        /// <param name="startAdress">First address of range</param>
-        /// <param name="endAdress">Last address of range</param>
+        /// <param name="startAddress">First address of range</param>
+        /// <param name="endAddress">Last address of range</param>
         /// <param name="readCallback">Read function for given address, accepts address as param</param>
         /// <param name="writeCallback">Write function for given address, accepts address and value as params</param>
-        void Map(int startAdress, int endAdress, Func<int, byte> readCallback, Action<int, byte> writeCallback);
+        void Map(int startAddress, int endAddress, Func<int, byte> readCallback, Action<int, byte> writeCallback);
 
         /// <summary>
         /// Read byte from given address
