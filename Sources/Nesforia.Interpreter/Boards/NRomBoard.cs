@@ -23,16 +23,25 @@
 *****************************************************************************/
 #endregion
 
+using System;
 using Nesforia.Core.Boards;
 using Nesforia.Core.Loaders;
 
 namespace Nesforia.Interpreter.Boards
 {
-    public class Cartidge : ICartridge
+    /// <summary>
+    /// Represents NROM Nes cartridge board
+    /// </summary>
+    public class NRomBoard : ICartridge
     {
-        public Cartidge(RomData romData)
+        private readonly byte[] _prgRom = new byte[0x8000];
+        private byte[] _chrRom = new byte[0x2000];
+
+        public NRomBoard(RomData romData)
         {
-            
+            _prgRom = romData.PrgRomDump;
+            _chrRom = romData.ChrRomDump;
+
         }
         
         public bool HasSaveRam { get; private set; }
@@ -40,7 +49,17 @@ namespace Nesforia.Interpreter.Boards
         
         public byte ReadPrg(int address)
         {
-            throw new System.NotImplementedException();
+            return _prgRom[address - 0x8000];
+        }
+
+        public byte ReadExpansion(int address)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public byte ReadSram(int address)
+        {
+            throw new InvalidOperationException();
         }
 
         public byte ReadChr(int address)
@@ -50,12 +69,22 @@ namespace Nesforia.Interpreter.Boards
 
         public void WritePrg(int address, byte value)
         {
-            throw new System.NotImplementedException();
+            throw new InvalidOperationException();
+        }
+
+        public void WriteExpansion(int address, byte value)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public void WriteSram(int address, byte value)
+        {
+            throw new InvalidOperationException();
         }
 
         public void WriteChr(int address, byte value)
         {
-            throw new System.NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

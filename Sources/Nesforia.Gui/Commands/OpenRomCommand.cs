@@ -51,7 +51,7 @@ namespace Nesforia.Gui.Commands
             base.OnExecuted(e);
 
             var dlg = new OpenFileDialog { Filters = CreateFilters(), Title = Resources.Text.OpenRomDlg };
-
+            
             if (dlg.ShowDialog(Application.Instance.MainForm) == DialogResult.Ok)
             {
                 using (var reader = new BinaryReader(File.OpenRead(dlg.FileName)))

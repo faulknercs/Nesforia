@@ -35,7 +35,7 @@ namespace Nesforia.Gui.Forms
     {
         private Nes _nesEmu;
 
-        private ILoaderProvider _loaderProvider;
+        private readonly ILoaderProvider _loaderProvider;
         
         public MainForm()
         {

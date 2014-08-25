@@ -118,6 +118,8 @@ namespace Nesforia.Core.Loaders
                 romData.TrainerDump = reader.ReadBytes(0x200);
             }
 
+            romData.MapperNumber = mapperNo;
+
             romData.PrgRomDump = reader.ReadBytes(prgRomSize * 0x4000);
             romData.ChrRomDump = reader.ReadBytes(chrRomSize * 0x2000);
 
