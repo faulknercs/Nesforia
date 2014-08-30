@@ -37,9 +37,8 @@ namespace Nesforia.Interpreter.Cpu
 
         private readonly IDictionary<Opcode, Action> _handlers = new Dictionary<Opcode, Action>();
 
-        // used for temporary saving value from memory
+        // used for temporary saving value from memory and address
         private byte _mValue;
-
         private int _effectiveAddress;
 
         public Cpu(IMemory ram)
@@ -83,7 +82,7 @@ namespace Nesforia.Interpreter.Cpu
         /// <param name="mode">Addressing mode of executing opcode</param>
         private void EvaluateAdderessAndMValue(AddressingMode mode)
         {
-            var arg = _ram.Read(_registers.PC + 1);
+            byte arg = _ram.Read(_registers.PC + 1);
 
             switch (mode)
             {

@@ -38,6 +38,8 @@
     <Compile Include="Cpu\Cpu.Opcodes.cs" />
     <Compile Include="Boards\NRomBoard.cs" />
     <Compile Include="Memory\Ram.cs" />
+    <Compile Include="Memory\RamBase.cs" />
+    <Compile Include="Memory\VRam.cs" />
     <Compile Include="Ppu\Ppu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -22,115 +22,82 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Nesforia.Core.Memory;
 
 namespace Nesforia.Interpreter.Memory
 {
-    public class Ram : IMemory
+    /// <summary>
+    /// Represents NES system RAM (CPU Address space)
+    /// </summary>
+    public class Ram : RamBase
     {
         private readonly byte[] _systemRam = new byte[0x800];
 
-        private readonly IDictionary<int, Func<byte>> _readMapping = new Dictionary<int, Func<byte>>();
-        private readonly IDictionary<int, Action<byte>> _writeMapping = new Dictionary<int, Action<byte>>();
-
-        private readonly IDictionary<int, Func<int, byte>> _readRangeMapping = new Dictionary<int, Func<int, byte>>();
-        private readonly IDictionary<int, Action<int, byte>> _writeRangeMapping = new Dictionary<int, Action<int, byte>>();
-
+        /// <summary>
+        /// Creates new instance of RAM
+        /// </summary>
         public Ram()
         {
             Map(0x0000, 0x1FFF, ReadSystemRam, WriteSystemRam);
         }
 
-        public void Map(int address, Func<byte> readCallback, Action<byte> writeCallback)
+        /// <summary>
+        /// Read byte from given address at system RAM, applies mirroring for RAM addresses and PPU registers addresses.
+        /// </summary>
+        /// <param name="address">16-bit address in memory (using int for CLS-compliance)</param>
+        /// <returns>Value at <paramref name="address"/></returns>
+        public override byte Read(int address)
         {
-            _readMapping[address] = readCallback;
-            _writeMapping[address] = writeCallback;
+            return base.Read(PrepareAddress(address));
         }
 
-        public void Map(int startAddress, int endAddress, Func<int, byte> readCallback, Action<int, byte> writeCallback)
+        /// <summary>
+        /// Write byte at given address at system RAM, applies mirroring for RAM addresses and PPU registers addresses.
+        /// </summary>
+        /// <param name="address">16-bit address in memory (using int for CLS-compliance)</param>
+        /// <param name="value">Value for write</param>
+        public override void Write(int address, byte value)
         {
-            _readRangeMapping[startAddress] = _readRangeMapping[endAddress] = readCallback;
-
-            _writeRangeMapping[startAddress] = _writeRangeMapping[endAddress] = writeCallback;
+            base.Write(PrepareAddress(address), value);
         }
 
-        public byte Read(int address)
+        /// <summary>
+        /// Provides writing to system ram
+        /// </summary>
+        /// <param name="address">Memory address</param>
+        /// <param name="value">Value to write</param>
+        private void WriteSystemRam(int address, byte value)
         {
-            if (address < 0 || address > 0xFFFF)
-            {
-                throw new ArgumentOutOfRangeException("address", String.Format("Trying read from invalid address: {0:X}", address));
-            }
-
-            address = PrepareAddress(address);
-
-            if (_readMapping.ContainsKey(address))
-            {
-                return _readMapping[address]();
-            }
-
-            var addresses = _readRangeMapping.Keys.Where(x => x <= address).ToList();
-
-            if (!addresses.Any())
-            {
-                throw new ArgumentOutOfRangeException("address", String.Format("Handler for address {0:X} not found", address));
-            }
-
-            int key = addresses.Max();
-            return _readRangeMapping[key](address);
+            _systemRam[address] = value;
         }
 
-        public void Write(int address, byte value)
+        /// <summary>
+        /// Provides reading from system ram
+        /// </summary>
+        /// <param name="address">Memory address</param>
+        /// <returns>Value at given address</returns>
+        private byte ReadSystemRam(int address)
         {
-            if (address < 0 || address > 0xFFFF)
-            {
-                throw new ArgumentOutOfRangeException("address", "Trying write to invalid address");
-            }
-
-            address = PrepareAddress(address);
-
-            if (_readMapping.ContainsKey(address))
-            {
-                _writeMapping[address](value);
-                return;
-            }
-
-            var addresses = _writeRangeMapping.Keys.Where(x => x <= address).ToList();
-
-            if (!addresses.Any())
-            {
-                throw new ArgumentOutOfRangeException("address", String.Format("Handler for address {0:X} not found", address));
-            }
-
-            int key = addresses.Max();
-            _writeMapping[key](value);
+            return _systemRam[address];
         }
 
-        private int PrepareAddress(int address)
+        /// <summary>
+        /// Applies mirroring of 0x0000 - 0x07FF addresses to 0x0800 - 0x1FFF and mirroring of 0x2000 - 0x2007 to 0x2008 - 0x3FF8. Other addresses don't change.
+        /// </summary>
+        /// <param name="address">Original address</param>
+        /// <returns>Address after applying mirroring</returns>
+        private static int PrepareAddress(int address)
         {
             if (address < 0x2000)
             {
                 return address & 0x07FF;
             }
 
-            if(address < 0x4000)
+            if (address < 0x4000)
             {
                 return address & 0x2007;
             }
 
             return address;
-        }
-
-        private void WriteSystemRam(int address, byte value)
-        {
-            _systemRam[address] = value;
-        }
-
-        private byte ReadSystemRam(int address)
-        {
-            return _systemRam[address];
         }
     }
 }
