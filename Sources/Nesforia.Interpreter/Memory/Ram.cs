@@ -67,7 +67,7 @@ namespace Nesforia.Interpreter.Memory
         /// <param name="value">Value to write</param>
         private void WriteSystemRam(int address, byte value)
         {
-            _systemRam[address] = value;
+            _systemRam[address & 0x07FF] = value;
         }
 
         /// <summary>
@@ -77,27 +77,17 @@ namespace Nesforia.Interpreter.Memory
         /// <returns>Value at given address</returns>
         private byte ReadSystemRam(int address)
         {
-            return _systemRam[address];
+            return _systemRam[address & 0x07FF];
         }
 
         /// <summary>
-        /// Applies mirroring of 0x0000 - 0x07FF addresses to 0x0800 - 0x1FFF and mirroring of 0x2000 - 0x2007 to 0x2008 - 0x3FF8. Other addresses don't change.
+        /// Applies mirroring of mirroring of 0x2000 - 0x2007 to 0x2008 - 0x3FF8. Other addresses don't change.
         /// </summary>
         /// <param name="address">Original address</param>
         /// <returns>Address after applying mirroring</returns>
         private static int PrepareAddress(int address)
         {
-            if (address < 0x2000)
-            {
-                return address & 0x07FF;
-            }
-
-            if (address < 0x4000)
-            {
-                return address & 0x2007;
-            }
-
-            return address;
+            return address < 0x4000 ? address & 0x2007 : address;
         }
     }
 }

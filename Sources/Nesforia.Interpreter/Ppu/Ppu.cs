@@ -33,6 +33,36 @@ namespace Nesforia.Interpreter.Ppu
         private readonly IMemory _vram;
         private readonly IGraphicsDevice _graphicsDevice;
 
+        private bool _isVblank;
+        private bool _isSprite0Hit;
+        private bool _isSpriteOverflow;
+
+        private bool _nmiEnabled;
+        private int _vramAddressIncrement;
+        private int _baseNametableAddress;
+        private int _sprite8X8PatternTableAddress;
+        private int _backgroundPatternTableAddress;
+        private bool _isBigSprite;
+
+        private bool _isGrayscale;
+        private bool _isBackgroundClipped;
+        private bool _isSpriteClipped;
+        private bool _showBackground;
+        private bool _showSprites;
+        private int _emphasis;
+
+        private int _oamAddress;
+        private byte[] _oam = new byte[0x100];
+
+        private bool _vramFlipFlop;
+
+        private int _vramAddress;
+
+        /// <summary>
+        /// Initialize NES PPU with given VRam and GraphicsDevice
+        /// </summary>
+        /// <param name="graphicsDevice">Graphics device, used to output resulting image</param>
+        /// <param name="vram">NES VRAM implementation</param>
         public Ppu(IGraphicsDevice graphicsDevice, IMemory vram)
         {
             _graphicsDevice = graphicsDevice;
@@ -41,7 +71,28 @@ namespace Nesforia.Interpreter.Ppu
 
         public byte Read2002()
         {
-            throw new System.NotImplementedException();
+            byte value = 0;
+
+            if (_isSprite0Hit)
+            {
+                value |= 0x40;
+            }
+
+            if (_isVblank)
+            {
+                value |= 0x80;
+            }
+
+            if (_isSpriteOverflow)
+            {
+                value |= 0x20;
+            }
+
+            // this flags should be cleared after reading from 2002
+            _vramFlipFlop = false;
+            _isVblank = false;
+
+            return value;
         }
 
         public byte Read2004()
@@ -56,37 +107,71 @@ namespace Nesforia.Interpreter.Ppu
 
         public void Write2000(byte value)
         {
-            throw new System.NotImplementedException();
+            _baseNametableAddress = 0x2000 + 0x400 * (value & 0x03);
+            _vramAddressIncrement = (value & 0x04) != 0 ? 32 : 1;
+            _sprite8X8PatternTableAddress = (value & 0x08) != 0 ? 0x1000 : 0;
+            _backgroundPatternTableAddress = (value & 0x10) != 0 ? 0x1000 : 0;
+            _isBigSprite = (value & 0x20) != 0;
+            _nmiEnabled = (value & 0x80) != 0;
         }
 
         public void Write2001(byte value)
         {
-            throw new System.NotImplementedException();
+            _isGrayscale = (value & 0x01) != 0;
+            _isBackgroundClipped = (value & 0x02) == 0;
+            _isSpriteClipped = (value & 0x04) == 0;
+            _showBackground = (value & 0x08) != 0;
+            _showSprites = (value & 0x10) != 0;
+            _emphasis = (value & 0xE0) << 1;
         }
 
         public void Write2003(byte value)
         {
-            throw new System.NotImplementedException();
+            _oamAddress = value;
         }
 
         public void Write2004(byte value)
         {
-            throw new System.NotImplementedException();
+            // todo: check, if rendering is run to emulate glitchy increment of OAMADDR register
+            //if ()
+            //{
+                
+            //}
+            _oam[_oamAddress++] = value;
         }
 
         public void Write2005(byte value)
         {
-            throw new System.NotImplementedException();
+            if (_vramFlipFlop)
+            {
+                
+            }
+            else
+            {
+                
+            }
+
+            _vramFlipFlop = !_vramFlipFlop;
         }
 
         public void Write2006(byte value)
         {
-            throw new System.NotImplementedException();
+            if (_vramFlipFlop)
+            {
+                _vramAddress = value << 8;
+            }
+            else
+            {
+                _vramAddress |= value;
+            }
+
+            _vramFlipFlop = !_vramFlipFlop;
         }
 
         public void Write2007(byte value)
         {
-            throw new System.NotImplementedException();
+            _vram.Write(_vramAddress, value);
+            _vramAddress = (_vramAddress + _vramAddressIncrement) & 0xFFFF;
         }
     }
 }
