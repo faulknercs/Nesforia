@@ -26,6 +26,8 @@ namespace Nesforia.Core.Cpu
 {
     public interface ICpu
     {
+        int Cycles { get; }
+
         void HardReset();
 
         void SoftReset();

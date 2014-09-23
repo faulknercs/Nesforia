@@ -32,16 +32,24 @@ namespace Nesforia.Interpreter.Boards
     /// <summary>
     /// Represents NROM Nes cartridge board
     /// </summary>
+    [Mapper(0)]
+    [BoardName("NROM")]
     public class NRomBoard : ICartridge
     {
         private readonly byte[] _prgRom = new byte[0x8000];
-        private byte[] _chrRom = new byte[0x2000];
+        private readonly byte[] _chrRom = new byte[0x2000];
 
         public NRomBoard(RomData romData)
         {
-            _prgRom = romData.PrgRomDump;
-            _chrRom = romData.ChrRomDump;
+            romData.PrgRomDump.CopyTo(_prgRom, 0);
 
+            // if rom contains only 16 Kb of data, it will be mirrored to upper bank (NROM-128 case)
+            if (romData.PrgRomDump.Length == 0x4000)
+            {
+                romData.PrgRomDump.CopyTo(_prgRom, 0x4000);
+            }
+
+            romData.ChrRomDump.CopyTo(_chrRom, 0);
         }
         
         public bool HasSaveRam { get; private set; }
@@ -52,19 +60,19 @@ namespace Nesforia.Interpreter.Boards
             return _prgRom[address - 0x8000];
         }
 
+        public byte ReadChr(int address)
+        {
+            return _chrRom[address];
+        }
+
         public byte ReadExpansion(int address)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("NROM Board doesn't support expansion area");
         }
 
         public byte ReadSram(int address)
         {
             throw new InvalidOperationException();
-        }
-
-        public byte ReadChr(int address)
-        {
-            throw new System.NotImplementedException();
         }
 
         public void WritePrg(int address, byte value)

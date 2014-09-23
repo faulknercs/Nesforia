@@ -70,6 +70,10 @@
       <Project>{c74c23d5-b1d2-4d6a-bda4-365a59060e67}</Project>
       <Name>Nesforia.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nesforia.Interpreter\Nesforia.Interpreter.csproj">
+      <Project>{375AC093-F6E1-421F-A346-0697764418C5}</Project>
+      <Name>Nesforia.Interpreter</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Text.resx">

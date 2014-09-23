@@ -32,6 +32,14 @@ namespace Nesforia.Core.Ppu
     /// </remarks>
     public interface IPpu
     {
+        void Clock();
+
+        /// <summary>
+        /// Sets type of emulated video system
+        /// </summary>
+        /// <param name="tvSystem">Type of video system</param>
+        void SetTvSystem(TvSystem tvSystem);
+
         /// <summary>
         /// Reads status register of PPU (PPUSTATUS)
         /// </summary>

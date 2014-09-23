@@ -22,6 +22,8 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
+
+using System;
 using Nesforia.Core.IO;
 using Nesforia.Core.Memory;
 using Nesforia.Core.Ppu;
@@ -33,6 +35,12 @@ namespace Nesforia.Interpreter.Ppu
         private readonly IMemory _vram;
         private readonly IGraphicsDevice _graphicsDevice;
 
+        private TvSystem _tvSystem;
+        private int _vblStart;
+        private int _vblEnd;
+
+        private int _scanLinesCounter;
+        
         private bool _isVblank;
         private bool _isSprite0Hit;
         private bool _isSpriteOverflow;
@@ -67,6 +75,32 @@ namespace Nesforia.Interpreter.Ppu
         {
             _graphicsDevice = graphicsDevice;
             _vram = vram;
+        }
+
+        public void Clock()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetTvSystem(TvSystem tvSystem)
+        {
+            _tvSystem = tvSystem;
+
+            switch (_tvSystem)
+            {
+                case TvSystem.Ntsc:
+                    _vblStart = 241;
+                    _vblEnd = 261;
+                    break;
+                case TvSystem.Pal:
+
+                    break;
+                case TvSystem.DualCompatible:
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("tvSystem", "Unsupported TV Sytem");
+            }
         }
 
         public byte Read2002()

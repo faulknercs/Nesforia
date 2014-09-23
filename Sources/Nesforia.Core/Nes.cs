@@ -58,6 +58,8 @@ namespace Nesforia.Core
             Initialization();
         }
 
+        public bool IsRun { get; private set; }
+
         /// <summary>
         /// Load cartridge to emulator
         /// </summary>
@@ -67,8 +69,11 @@ namespace Nesforia.Core
             _cartridge = cartridge;
 
             //_ram.Reset();
-            _ram.Map(0x4021, 0xFFFF, cartridge.ReadPrg, cartridge.WritePrg);
+            _ram.Map(0x4021, 0x5FFF, cartridge.ReadExpansion, cartridge.WriteExpansion);
+            _ram.Map(0x6000, 0x7FFF, cartridge.ReadSram, cartridge.WriteSram);
+            _ram.Map(0x8000, 0xFFFF, cartridge.ReadPrg, cartridge.WritePrg);
 
+            _vram.Map(0x0000, 0x2000, cartridge.ReadChr, cartridge.WriteChr);
             throw new NotImplementedException();
         }
 
@@ -77,6 +82,13 @@ namespace Nesforia.Core
         /// </summary>
         public void Run()
         {
+            while (IsRun)
+            {
+                _cpu.Execute();
+
+                _ppu.Clock();
+            }
+
             throw new NotImplementedException();
         }
 

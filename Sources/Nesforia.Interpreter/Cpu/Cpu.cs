@@ -48,6 +48,8 @@ namespace Nesforia.Interpreter.Cpu
             InitializeOpcodesHandlers();
         }
 
+        public int Cycles { get; private set; }
+
         public void HardReset()
         {
             throw new System.NotImplementedException();
@@ -74,6 +76,8 @@ namespace Nesforia.Interpreter.Cpu
             _registers.PC += opcode.Size();
 
             handler();
+
+            Cycles += opcode.CpuCycles();
         }
 
         /// <summary>

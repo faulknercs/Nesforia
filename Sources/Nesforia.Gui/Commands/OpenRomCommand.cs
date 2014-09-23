@@ -28,7 +28,9 @@ using System.IO;
 using System.Linq;
 using Eto.Forms;
 using Nesforia.Core;
+using Nesforia.Core.Boards;
 using Nesforia.Core.Loaders;
+using Nesforia.Interpreter.Boards;
 
 namespace Nesforia.Gui.Commands
 {
@@ -62,6 +64,8 @@ namespace Nesforia.Gui.Commands
                     {
                         rom.Name = Path.GetFileNameWithoutExtension(dlg.FileName);
                     }
+                    // todo: for testing purposes, instantiat explicitly, shoud be made via provider
+                    ICartridge cart = new NRomBoard(rom);
                 }
             }
         }
