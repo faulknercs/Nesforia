@@ -40,6 +40,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apu\IApu.cs" />
+    <Compile Include="Boards\BoardNameAttribute.cs" />
+    <Compile Include="Boards\MapperAttribute.cs" />
+    <Compile Include="Boards\IBoardProvider.cs" />
     <Compile Include="Cpu\AddressingMode.cs" />
     <Compile Include="Cpu\ICpu.cs" />
     <Compile Include="Cpu\OpcodeParametersAttribute.cs" />
