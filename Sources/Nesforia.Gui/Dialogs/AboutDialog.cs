@@ -22,26 +22,34 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
-using System;
+
+using Eto.Drawing;
 using Eto.Forms;
-using Nesforia.Gui.Dialogs;
+using Nesforia.Gui.Resources;
 
-namespace Nesforia.Gui.Commands
+namespace Nesforia.Gui.Dialogs
 {
-    public class AboutCommand : Command
+    internal class AboutDialog : Dialog
     {
-        public AboutCommand()
+        public AboutDialog()
         {
-            MenuText = Resources.Text.HelpAbout;
-            Shortcut = Keys.F1;
-        }
+            Title = Resources.Text.Nesforia;
+            
+            var layout = new DynamicLayout(new Padding(10, 10));
 
-        public override void OnExecuted(EventArgs e)
-        {
-            base.OnExecuted(e);
+            layout.AddCentered(new ImageView { Image = AppImages.AboutImage });
 
-            var dlg = new AboutDialog();
-            dlg.ShowDialog(Application.Instance.MainForm);
+            layout.AddCentered(new Label { Text = Resources.Text.Nesforia, Font = new Font(SystemFont.Bold) });
+
+            layout.Add(new Label { Text = Resources.Text.NesforiaDescription });
+
+            var button = new Button { Text = Resources.Text.Ok };
+            button.Click += (sender, args) => Close();
+            AbortButton = DefaultButton = button;
+
+            layout.AddCentered(button);
+
+            Content = layout;
         }
     }
 }

@@ -131,7 +131,8 @@ namespace Nesforia.Interpreter.Ppu
 
         public byte Read2004()
         {
-            throw new System.NotImplementedException();
+            // todo: add check of rendering
+            return _oam[_oamAddress];
         }
 
         public byte Read2007()
@@ -167,10 +168,7 @@ namespace Nesforia.Interpreter.Ppu
         public void Write2004(byte value)
         {
             // todo: check, if rendering is run to emulate glitchy increment of OAMADDR register
-            //if ()
-            //{
-                
-            //}
+
             _oam[_oamAddress++] = value;
         }
 

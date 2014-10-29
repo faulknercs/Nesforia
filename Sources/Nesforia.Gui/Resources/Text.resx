@@ -150,4 +150,10 @@
   <data name="NesSoftReset" xml:space="preserve">
     <value>Soft Reset</value>
   </data>
+  <data name="Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NesforiaDescription" xml:space="preserve">
+    <value>NES/Famicom Emulator</value>
+  </data>
 </root>

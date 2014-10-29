@@ -115,6 +115,15 @@ namespace Nesforia.Gui.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NES/Famicom Emulator.
+        /// </summary>
+        internal static string NesforiaDescription {
+            get {
+                return ResourceManager.GetString("NesforiaDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hard Reset.
         /// </summary>
         internal static string NesHardReset {
@@ -147,6 +156,15 @@ namespace Nesforia.Gui.Resources {
         internal static string NesSoftReset {
             get {
                 return ResourceManager.GetString("NesSoftReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        internal static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
             }
         }
         

@@ -22,26 +22,28 @@
 * along with this library. If not, see <http://www.gnu.org/licenses/>.
 *****************************************************************************/
 #endregion
+
 using System;
-using Eto.Forms;
-using Nesforia.Gui.Dialogs;
+using System.Reflection;
+using Eto.Drawing;
 
-namespace Nesforia.Gui.Commands
+namespace Nesforia.Gui.Resources
 {
-    public class AboutCommand : Command
+    internal static class AppImages
     {
-        public AboutCommand()
+        private static readonly String Prefix;
+
+        #region Icons
+
+        private static Bitmap _aboutImage;
+
+        #endregion
+
+        static AppImages()
         {
-            MenuText = Resources.Text.HelpAbout;
-            Shortcut = Keys.F1;
+            Prefix = String.Format("{0}.Resources.Images.", Assembly.GetExecutingAssembly().GetName().Name);
         }
 
-        public override void OnExecuted(EventArgs e)
-        {
-            base.OnExecuted(e);
-
-            var dlg = new AboutDialog();
-            dlg.ShowDialog(Application.Instance.MainForm);
-        }
+        public static Bitmap AboutImage { get { return _aboutImage = _aboutImage ?? Bitmap.FromResource(Prefix + "AboutImage.png"); } }
     }
 }
