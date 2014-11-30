@@ -34,8 +34,8 @@ namespace Nesforia.Gui.Dialogs
         public AboutDialog()
         {
             Title = Resources.Text.Nesforia;
-            
-            var layout = new DynamicLayout(new Padding(10, 10));
+
+            var layout = new DynamicLayout { Padding = new Padding(10, 10) };
 
             layout.AddCentered(new ImageView { Image = AppImages.AboutImage });
 

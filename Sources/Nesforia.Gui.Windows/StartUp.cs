@@ -35,9 +35,9 @@ namespace Nesforia.Gui.Windows
         [STAThread]
         static void Main(string[] args)
         {
-            var generator = Generator.Detect;
-            var app = new NesforiaApplication(generator);
-            app.Run(args);
+            var platform = Platform.Detect;
+            var app = new NesforiaApplication(platform);
+            app.Run();
         }
     }
 }

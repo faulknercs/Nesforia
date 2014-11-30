@@ -62,11 +62,11 @@ namespace Nesforia.Gui.Forms
             
             var helpMenu = menu.Items.GetSubmenu(Resources.Text.HelpMenu, 1000);
 
-            if (Generator.IsMac)
+            if (Platform.IsMac)
             {
                 // OS X style menu
-                var main = menu.Items.GetSubmenu(Application.Instance.Name, 0);
-                main.Items.Add(new AboutCommand(), 0);
+                var main = menu.Items.GetSubmenu(Application.Instance.Name);
+                main.Items.Add(new AboutCommand());
                 main.Items.Add(new QuitCommand(), 1000);
             }
             else
@@ -76,8 +76,7 @@ namespace Nesforia.Gui.Forms
                 fileMenu.Items.Add(new QuitCommand());
                 helpMenu.Items.Add(new AboutCommand());
             }
-
-
+            
             Menu = menu;
         }
     }

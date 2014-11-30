@@ -31,9 +31,9 @@ namespace Nesforia.Gui
 {
     public class NesforiaApplication : Application
     {
-        public NesforiaApplication(Generator generator) : base(generator) { }
+        public NesforiaApplication(Platform platform) : base(platform) { }
 
-        public override void OnInitialized(EventArgs e)
+        protected override void OnInitialized(EventArgs e)
         {
             MainForm = new MainForm();
 

@@ -48,7 +48,7 @@ namespace Nesforia.Gui.Commands
             Shortcut = Application.Instance.CommonModifier | Keys.O;
         }
 
-        public override void OnExecuted(EventArgs e)
+        protected override void OnExecuted(EventArgs e)
         {
             base.OnExecuted(e);
 
