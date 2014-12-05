@@ -36,8 +36,7 @@ namespace Nesforia.Core.Loaders
         /// <summary>
         /// Gets avalaible loaders for current provider
         /// </summary>
-        /// <returns>Available loaders</returns>
-        IEnumerable<IRomLoader> GetAvailableLoaders();
+        IEnumerable<IRomLoader> AvailableLoaders { get; }
 
         /// <summary>
         /// Gets loader for file header. Should not change stream position.

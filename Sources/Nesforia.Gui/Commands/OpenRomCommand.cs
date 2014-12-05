@@ -75,7 +75,7 @@ namespace Nesforia.Gui.Commands
             var filters = new List<IFileDialogFilter>();
             var allExtensions = new List<String>();
 
-            foreach (var loader in _loaderProvider.GetAvailableLoaders())
+            foreach (var loader in _loaderProvider.AvailableLoaders)
             {
                 filters.Add(new FileDialogFilter(loader.FormatName, loader.FileExtensions));
                 allExtensions.AddRange(loader.FileExtensions);

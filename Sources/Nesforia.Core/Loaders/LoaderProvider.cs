@@ -24,6 +24,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Nesforia.Core.Exceptions;
@@ -40,11 +41,9 @@ namespace Nesforia.Core.Loaders
         /// <summary>
         /// Gets avalaible loaders for current provider
         /// </summary>
-        /// <returns>Available loaders</returns>
-        public IEnumerable<IRomLoader> GetAvailableLoaders()
+        public IEnumerable<IRomLoader> AvailableLoaders
         {
-            
-            return new List<IRomLoader>(_romLoaders);
+            get { return new ReadOnlyCollection<IRomLoader>(_romLoaders); }
         }
 
         /// <summary>
