@@ -33,21 +33,29 @@ namespace Nesforia.Gui.Dialogs
     {
         public AboutDialog()
         {
-            Title = Resources.Text.Nesforia;
+            Title = Text.Nesforia;
 
-            var layout = new DynamicLayout { Padding = new Padding(10, 10) };
-
-            layout.AddCentered(new ImageView { Image = AppImages.AboutImage });
-
-            layout.AddCentered(new Label { Text = Resources.Text.Nesforia, Font = new Font(SystemFont.Bold) });
-
-            layout.Add(new Label { Text = Resources.Text.NesforiaDescription });
-
-            var button = new Button { Text = Resources.Text.Ok };
+            var layout = new TableLayout
+            {
+                Padding = new Padding(10, 10),
+                Spacing = new Size(5, 5),
+                Rows =
+                {
+                    new TableRow(
+                        new ImageView { Image = AppImages.AboutImage },
+                        new TableLayout(
+                            new Label { Text = Text.Nesforia, Font = new Font(SystemFont.Bold) }, 
+                            new Label { Text = Text.NesforiaDescription }
+                            )
+                        ),
+                },
+            };
+            
+            var button = new Button { Text = Text.Ok };
             button.Click += (sender, args) => Close();
             AbortButton = DefaultButton = button;
 
-            layout.AddCentered(button);
+            layout.Rows.Add(new TableRow(null, button));
 
             Content = layout;
         }
